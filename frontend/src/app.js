@@ -8,27 +8,40 @@ let firstOperand = null;
 
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        const value = button.textContent;
-
-        if (value >= '0' && value <= '9' || value === '.') {
-            currentInput += value;
-            display.value = currentInput;
-        } else if (['+', '-', '*', '/'].includes(value)) {
-            if (firstOperand === null) {
-                firstOperand = parseFloat(currentInput);
-                currentInput = '';
-                operator = value;
-            }
-        } else if (value === '=') {
-            if (firstOperand !== null && currentInput !== '') {
-                const secondOperand = parseFloat(currentInput);
-                calculateResult(firstOperand, secondOperand, operator);
-            }
-        } else if (value === 'C') {
-            clear();
-        }
+        handleInput(button.textContent);
     });
 });
+
+document.addEventListener('keydown', (event) => {
+    const key = event.key;
+    if ((key >= '0' && key <= '9') || key === '.' || ['+', '-', '*', '/'].includes(key)) {
+        handleInput(key);
+    } else if (key === 'Enter') {
+        handleInput('=');
+    } else if (key === 'Escape') {
+        handleInput('C');
+    }
+});
+
+function handleInput(value) {
+    if (value >= '0' && value <= '9' || value === '.') {
+        currentInput += value;
+        display.value = currentInput;
+    } else if (['+', '-', '*', '/'].includes(value)) {
+        if (firstOperand === null) {
+            firstOperand = parseFloat(currentInput);
+            currentInput = '';
+            operator = value;
+        }
+    } else if (value === '=') {
+        if (firstOperand !== null && currentInput !== '') {
+            const secondOperand = parseFloat(currentInput);
+            calculateResult(firstOperand, secondOperand, operator);
+        }
+    } else if (value === 'C') {
+        clear();
+    }
+}
 
 async function calculateResult(a, b, op) {
     let result;
